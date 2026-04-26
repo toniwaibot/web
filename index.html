@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Toni Waibot | AI Multi-Agent for Wealth Management</title>
+    <!-- Google Fonts + Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(145deg, #f0f5fb 0%, #e9f0f5 100%);
+            color: #1a2c3e;
+            line-height: 1.5;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Main container */
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        /* Header area */
+        .hero {
+            background: #0a2b3e;
+            padding: 2rem 2rem 1.8rem;
+            color: white;
+            border-bottom: 3px solid #d4af7a;
+        }
+
+        .hero h1 {
+            font-size: 2.3rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .hero h1 i {
+            color: #e9c891;
+            font-size: 2rem;
+        }
+
+        .hero .tagline {
+            font-size: 1.05rem;
+            margin-top: 0.6rem;
+            opacity: 0.85;
+            max-width: 700px;
+        }
+
+        .hero-badge {
+            background: rgba(212, 175, 122, 0.2);
+            display: inline-block;
+            padding: 0.25rem 0.85rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-top: 1rem;
+            border: 1px solid rgba(212, 175, 122, 0.4);
+        }
+
+        /* Two column layout */
+        .two-col {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        /* LEFT PANEL - info & capabilities */
+        .info-panel {
+            flex: 1.2;
+            background: white;
+            padding: 2rem 1.8rem;
+            border-right: 1px solid #e2e8f0;
+        }
+
+        .info-panel h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0f2c3d;
+            border-left: 5px solid #d4af7a;
+            padding-left: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .agent-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .agent-card {
+            background: #fefcf7;
+            border-radius: 1.2rem;
+            padding: 1.1rem 1.2rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            border: 1px solid #f0e7da;
+            transition: all 0.2s ease;
+        }
+
+        .agent-card:hover {
+            border-color: #d4af7a;
+            background: #fffaf2;
+        }
+
+        .agent-card h3 {
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0.5rem;
+            color: #1a3b4e;
+        }
+
+        .agent-card h3 i {
+            color: #c9a055;
+            font-size: 1.2rem;
+        }
+
+        .agent-card p {
+            color: #2c475c;
+            font-size: 0.9rem;
+            line-height: 1.45;
+        }
+
+        .multi-note {
+            background: #eef3fa;
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin-top: 1.8rem;
+            border-left: 4px solid #8aaec0;
+        }
+
+        .multi-note i {
+            color: #0f5c7a;
+            margin-right: 8px;
+        }
+
+        /* RIGHT PANEL - chat widget */
+        .chat-panel {
+            flex: 1;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+
+        .chat-header {
+            padding: 1.3rem 1.5rem;
+            background: #faf9f7;
+            border-bottom: 1px solid #e9e2d8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .chat-header .title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-header .title i {
+            font-size: 1.6rem;
+            color: #c9a968;
+        }
+
+        .chat-header .title span {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #1e3a4a;
+        }
+
+        .reset-btn {
+            background: none;
+            border: 1px solid #d4c8b8;
+            border-radius: 40px;
+            padding: 0.4rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #5a6e7a;
+        }
+
+        .reset-btn:hover {
+            background: #ece4d9;
+            color: #2c4b5e;
+            border-color: #c2aa7a;
+        }
+
+        /* Chat messages area */
+        .chat-messages {
+            flex: 1;
+            min-height: 420px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 1.5rem 1.2rem;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* message bubbles */
+        .message {
+            display: flex;
+            gap: 12px;
+            max-width: 85%;
+            animation: fadeSlideUp 0.25s ease-out;
+        }
+
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(6px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        .user-message {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+        }
+
+        .avatar {
+            width: 34px;
+            height: 34px;
+            background: #e9eef2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .bot-message .avatar {
+            background: #dfe9f0;
+            color: #1f5f7a;
+        }
+
+        .user-message .avatar {
+            background: #d9e0e6;
+            color: #326480;
+        }
+
+        .bubble {
+            background: #f2f4f8;
+            padding: 0.75rem 1rem;
+            border-radius: 18px;
+            border-top-left-radius: 4px;
+            font-size: 0.9rem;
+            line-height: 1.45;
+            color: #1f2f3a;
+            word-break: break-word;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+
+        .user-message .bubble {
+            background: #e6f0f9;
+            border-top-right-radius: 4px;
+            border-top-left-radius: 18px;
+            color: #0c2b3b;
+        }
+
+        .bot-message .bubble {
+            border-top-left-radius: 4px;
+            border-top-right-radius: 18px;
+            background: #fefcf5;
+            border: 1px solid #f0e3d2;
+        }
+
+        /* input area + suggestions */
+        .chat-input-area {
+            padding: 1rem 1.2rem 1.4rem;
+            border-top: 1px solid #ede6dd;
+            background: #fefefc;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            border: 1px solid #dbcdaa;
+            border-radius: 60px;
+            padding: 0.8rem 1.2rem;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            background: white;
+            transition: 0.2s;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: #a78653;
+            box-shadow: 0 0 0 2px rgba(199, 160, 80, 0.2);
+        }
+
+        .input-wrapper button {
+            background: #1f596e;
+            border: none;
+            border-radius: 60px;
+            padding: 0.8rem 1.4rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .input-wrapper button:hover {
+            background: #0f4153;
+        }
+
+        .input-wrapper button:disabled {
+            background: #b9c4cb;
+            cursor: not-allowed;
+        }
+
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 1rem;
+        }
+
+        .suggestions button {
+            background: #f3f1ed;
+            border: 1px solid #e1d5c4;
+            border-radius: 50px;
+            padding: 0.45rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #2e5068;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+
+        .suggestions button:hover {
+            background: #e9dfd1;
+            border-color: #c7aa79;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.2rem;
+            font-size: 0.7rem;
+            color: #5f7a8a;
+            border-top: 1px solid #e5ddd2;
+            background: #fefefe;
+        }
+
+        @media (max-width: 850px) {
+            body { padding: 1rem; }
+            .two-col { flex-direction: column; }
+            .info-panel { border-right: none; border-bottom: 1px solid #e2e8f0; }
+            .chat-messages { max-height: 420px; }
+            .message { max-width: 90%; }
+        }
+
+        /* custom scroll */
+        .chat-messages::-webkit-scrollbar {
+            width: 5px;
+        }
+        .chat-messages::-webkit-scrollbar-track {
+            background: #eee7df;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #bcab8f;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard">
+    <div class="hero">
+        <h1>
+            <i class="fas fa-robot"></i> 
+            Toni Waibot
+            <span style="font-size:1rem; font-weight:500; background:#2f5f74; padding:0.2rem 0.8rem; border-radius:40px; margin-left:8px;">multi‑agent AI</span>
+        </h1>
+        <div class="tagline">
+            The intelligent nerve centre for wealth management firms — seamlessly orchestrating front, middle, back office & sales.
+        </div>
+        <div class="hero-badge">
+            <i class="fas fa-gbp-sign"></i> FCA principles · UK wealth expertise · HNW & UHNW ready
+        </div>
+    </div>
+
+    <div class="two-col">
+        <!-- LEFT: Capabilities & explanation -->
+        <div class="info-panel">
+            <h2><i class="fas fa-crown" style="color:#c9a055;"></i> Wealth management authority</h2>
+            <div class="agent-grid">
+                <div class="agent-card">
+                    <h3><i class="fas fa-handshake"></i> Front Office</h3>
+                    <p>Client acquisition, relationship management, KYC/CDD, financial planning, portfolio advisory, and bespoke onboarding for high‑net‑worth individuals. Sales pipeline & CRM intelligence.</p>
+                </div>
+                <div class="agent-card">
+                    <h3><i class="fas fa-chart-line"></i> Middle Office</h3>
+                    <p>Risk analytics, compliance monitoring, performance attribution, regulatory reporting (FCA, HMRC), trade validation, position limits and exposure management.</p>
+                </div>
+                <div class="agent-card">
+                    <h3><i class="fas fa-database"></i> Back Office</h3>
+                    <p>Settlement & clearing, reconciliations, corporate actions, asset servicing, ledger postings, SWIFT/messaging, and full trade lifecycle support.</p>
+                </div>
+                <div class="agent-card">
+                    <h3><i class="fas fa-chart-simple"></i> Sales & Growth</h3>
+                    <p>Data‑driven sales strategies, cross‑selling wealth products, lead generation, client retention programmes, and revenue optimisation for wealth managers.</p>
+                </div>
+            </div>
+            <div class="multi-note">
+                <i class="fas fa-share-alt"></i> <strong>True multi‑agent synergy</strong><br>
+                Toni Waibot doesn't just answer — each specialised agent (Front, Middle, Back, Sales) works in parallel. Ask about compliance, trade settlements, client onboarding or investment sales, and I'll respond with deep, domain‑specific knowledge.
+            </div>
+        </div>
+
+        <!-- RIGHT: Chatbot interface -->
+        <div class="chat-panel">
+            <div class="chat-header">
+                <div class="title">
+                    <i class="fas fa-comment-dots"></i>
+                    <span>Talk to Toni Waibot</span>
+                    <i class="fas fa-microchip" style="font-size:0.8rem; opacity:0.7;"></i>
+                </div>
+                <button class="reset-btn" id="resetChatBtn"><i class="fas fa-arrow-rotate-left"></i> New chat</button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- dynamic messages go here -->
+            </div>
+            <div class="chat-input-area">
+                <div class="input-wrapper">
+                    <input type="text" id="chatInput" placeholder="Ask about wealth operations, compliance, sales, or back office..." autocomplete="off">
+                    <button id="sendBtn"><i class="fas fa-paper-plane"></i> Send</button>
+                </div>
+                <div class="suggestions" id="suggestionChips">
+                    <button data-question="Explain front office client onboarding">🏛️ Front office onboarding</button>
+                    <button data-question="How does middle office ensure FCA compliance?">📊 Middle office & FCA</button>
+                    <button data-question="Describe back office trade settlement">💼 Back office settlement</button>
+                    <button data-question="Suggest sales strategies for wealth firms">📈 Sales approach</button>
+                    <button data-question="Multi-agent advantage for wealth management">🤖 Multi‑agent edge</button>
+                </div>
+            </div>
+            <footer>
+                <i class="fas fa-lock"></i> Secure demo · Toni Waibot combines AI agents for WM · UK English
+            </footer>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ---------- DOM elements ----------
+    const chatContainer = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendButton = document.getElementById('sendBtn');
+    const resetBtn = document.getElementById('resetChatBtn');
+    const suggestionBtns = document.querySelectorAll('#suggestionChips button');
+
+    let isWaiting = false;  // disable send while bot responds
+
+    // ----- Helper: add message to UI -----
+    function addMessage(text, sender, agentTag = null) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
+
+        const avatarDiv = document.createElement('div');
+        avatarDiv.classList.add('avatar');
+        if (sender === 'user') {
+            avatarDiv.innerHTML = '<i class="fas fa-user"></i>';
+        } else {
+            avatarDiv.innerHTML = '<i class="fas fa-microchip"></i>';
+        }
+
+        const bubbleDiv = document.createElement('div');
+        bubbleDiv.classList.add('bubble');
+        let displayText = text;
+        if (sender === 'bot' && agentTag) {
+            // optional prefix for flavour (shows which agent specialism responds)
+            displayText = `<span style="font-weight:600; color:#b2822e;">${agentTag}:</span> ${text}`;
+            bubbleDiv.innerHTML = displayText;
+        } else {
+            bubbleDiv.innerText = displayText;
+        }
+        if (sender === 'bot' && !agentTag && text.includes('Front Office')) {
+            // do nothing else
+        }
+        messageDiv.appendChild(avatarDiv);
+        messageDiv.appendChild(bubbleDiv);
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    // ----- simulated bot intelligence (wealth multi-agent) -----
+    function getWealthAgentResponse(userMessage) {
+        const msg = userMessage.toLowerCase().trim();
+        // detect specific 'agent' categories and craft rich answers (UK wealth context)
+        
+        // FRONT OFFICE
+        if (msg.includes('front office') || msg.includes('onboarding') || msg.includes('client acquisition') || (msg.includes('kyc') && !msg.includes('middle')) || msg.includes('crm') || msg.includes('client relationship')) {
+            return { text: "Our Front Office Agent excels in high‑touch client onboarding, KYC/CDD in line with FCA guidelines, financial discovery, portfolio construction, and maintaining lasting family office relationships. We also handle sales pipelines, CRM integration, and prospecting for new HNW clients.", tag: "Front Office Agent" };
+        }
+        // MIDDLE OFFICE
+        if (msg.includes('middle office') || msg.includes('compliance') || msg.includes('risk management') || msg.includes('fca') || msg.includes('regulatory') || msg.includes('performance reporting') || msg.includes('position limits') || msg.includes('trade validation')) {
+            return { text: "Middle Office Agent provides real‑time risk monitoring, automated compliance checks (FCA, MIFID II, CASS rules), performance attribution, stress testing, and regulatory reporting for wealth managers. Ensures operational resilience and data integrity across portfolios.", tag: "Middle Office Agent" };
+        }
+        // BACK OFFICE
+        if (msg.includes('back office') || msg.includes('settlement') || msg.includes('reconciliation') || msg.includes('corporate actions') || msg.includes('trade lifecycle') || msg.includes('clearing') || msg.includes('asset servicing')) {
+            return { text: "Back Office Agent handles trade settlement (CREST, DTCC), cash and stock reconciliations, custody interfaces, dividend/interest processing, corporate action elections, and ledger postings. We also streamline fails management and nostro breaks.", tag: "Back Office Agent" };
+        }
+        // SALES & GROWTH
+        if (msg.includes('sales') || msg.includes('growth') || msg.includes('lead generation') || msg.includes('client retention') || msg.includes('cross sell') || msg.includes('revenue optimisation') || msg.includes('wealth product')) {
+            return { text: "Sales Agent harnesses behavioural analytics, market segmentation, and relationship intelligence to drive growth. We help wealth firms identify affluent prospects, improve retention rates, design tailored investment propositions, and increase AUM via ethical cross‑selling.", tag: "Sales Agent" };
+        }
+        
+        // general wealth/ investment / multi-agent questions
+        if (msg.includes('multi-agent') || msg.includes('how do you work') || msg.includes('architecture')) {
+            return { text: "Toni Waibot runs a coordinated multi‑agent AI system. Each agent (Front, Middle, Back, Sales) collaborates—so whether you need to handle a new client onboarding, monitor compliance, settle a trade, or design a sales campaign, I assign the right expert agent. Ask me about any operational area!", tag: "Toni (Orchestrator)" };
+        }
+        if (msg.includes('investment') || msg.includes('portfolio') || msg.includes('asset allocation') || msg.includes('wealth planning')) {
+            return { text: "Our Front Office and Middle Office agents work together: we model risk‑adjusted portfolios, asset allocation across equities/bonds/alternatives, tax‑efficient wrappers (ISA, SIPP, offshore bonds), and ESG preferences. Always respecting your firm's investment policy.", tag: "Wealth Advisor Agent" };
+        }
+        if (msg.includes('performance') || msg.includes('returns') || msg.includes('benchmark')) {
+            return { text: "Middle Office agent provides ex‑post performance attribution, benchmark comparisons, and custom reporting for wealth portfolios. We calculate net returns, time‑weighted returns, and prepare client‑ready factsheets.", tag: "Middle Office (Performance)" };
+        }
+        if (msg.includes('trade') && (msg.includes('error') || msg.includes('fail') || msg.includes('exception'))) {
+            return { text: "Back Office Agent monitors fails management, exception queues and provides automated root cause analysis for trade failures including SSI issues, cash mismatches, and corporate action discrepancies.", tag: "Back Office Ops" };
+        }
+        if (msg.includes('hello') || msg.includes('hi') || msg.includes('hey') || msg.includes('greetings')) {
+            return { text: "Good day! I'm Toni Waibot, your wealth management AI. Need assistance with front, middle, back office or sales? I'm ready to support your team with multi‑agent intelligence.", tag: "Toni Waibot" };
+        }
+        if (msg.includes('capabilities') || msg.includes('what can you do') || msg.includes('help')) {
+            return { text: "I can help with client onboarding (front office), compliance/risk (middle office), settlements/reconciliation (back office), and sales & growth strategies. Just ask anything about wealth investment operations – from investment proposals to daily trade processing.", tag: "Toni Waibot" };
+        }
+        // fallback: show multi-agent range
+        return { text: "I can assist across front, middle, back office and sales in wealth management. Could you be more specific? For example: ask about 'client KYC process', 'FCA compliance reporting', 'trade settlement lifecycle', 'wealth sales KPIs', or 'multi‑agent advantage'.", tag: "Toni Waibot" };
+    }
+    
+    // ----- bot reply simulation (with short authentic delay) -----
+    async function sendBotResponse(userQuery) {
+        if (isWaiting) return;
+        isWaiting = true;
+        sendButton.disabled = true;
+        chatInput.disabled = true;
+        
+        // simulate realistic 'typing' delay
+        await new Promise(resolve => setTimeout(resolve, 600 + Math.random() * 300));
+        
+        const { text, tag } = getWealthAgentResponse(userQuery);
+        // UK English spelling & smart wording added directly
+        let finalText = text;
+        if (!finalText.endsWith('.') && !finalText.endsWith('!') && !finalText.endsWith('?')) finalText += '.';
+        addMessage(finalText, 'bot', tag);
+        
+        isWaiting = false;
+        sendButton.disabled = false;
+        chatInput.disabled = false;
+        chatInput.focus();
+    }
+    
+    // ----- handle sending user message -----
+    async function handleSendMessage() {
+        const userText = chatInput.value.trim();
+        if (userText === "") return;
+        if (isWaiting) return;
+        
+        // display user message
+        addMessage(userText, 'user');
+        chatInput.value = '';
+        // produce bot answer
+        await sendBotResponse(userText);
+    }
+    
+    // ----- reset conversation (clear and set welcome message)-----
+    function resetConversation() {
+        if (isWaiting) return;
+        chatContainer.innerHTML = '';
+        // initial bot greeting
+        const welcomeMsg = "Hello, I'm Toni Waibot, your multi‑agent AI for wealth management. I orchestrate front, middle, back office and sales functions for investment firms. How may I assist you today? Feel free to ask about client onboarding, risk compliance, trade settlement or growth strategies.";
+        addMessage(welcomeMsg, 'bot', 'Toni Waibot');
+    }
+    
+    // ----- Event listeners -----
+    sendButton.addEventListener('click', handleSendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !isWaiting) {
+            e.preventDefault();
+            handleSendMessage();
+        }
+    });
+    
+    resetBtn.addEventListener('click', () => {
+        if (!isWaiting) {
+            resetConversation();
+        }
+    });
+    
+    // suggestion chips (quick questions)
+    suggestionBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            if (isWaiting) return;
+            const question = btn.getAttribute('data-question');
+            if (question) {
+                chatInput.value = question;
+                handleSendMessage();
+            }
+        });
+    });
+    
+    // initial load: reset to default welcome
+    resetConversation();
+    
+    // small extra: adjust placeholder with UK flavour
+    chatInput.placeholder = "e.g., How does your middle office handle FCA reporting?";
+</script>
+</body>
+</html>
